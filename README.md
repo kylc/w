@@ -1,3 +1,3 @@
-# Wbfmk
+# w
 
-*Webfmk* is a tiny Ruby web framework.
+*w* is a tiny Ruby web framework.
