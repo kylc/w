@@ -22,4 +22,15 @@ module W
   def get(path, &blk)
     @@routes[:get] << { :path => path, :behavior => blk }
   end
+
+  # Rack callback for requests.  Rack provides an environment and expects a
+  # response array of [status, headers, body].
+  def self.call(env)
+    [200, {}, ["Hello!"]]
+  end
 end
+
+# Extend the top-level Object with our module.
+extend W
+
+Rack::Handler::WEBrick.run W
