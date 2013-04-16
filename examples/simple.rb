@@ -1,5 +1,9 @@
 require_relative '../lib/w'
 
-get '/' do
+get '^/$' do
   "Hello, world!"
+end
+
+get '^/hello$' do
+  "Goodbye, world!"
 end
