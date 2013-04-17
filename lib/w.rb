@@ -20,17 +20,34 @@ module W
   #
   # The value returned by the block will be rendered.
   def get(path, &blk)
-    @@routes[:get] << { :path => path, :behavior => blk }
+    @@routes[:get] << { :path => Regexp::compile(path), :behavior => blk }
+  end
+
+  # Find which route matches the given path.  Return +nil+ if no routes match.
+  def self.which(method, path)
+    @@routes[method].detect do |r|
+      path.match(r[:path])
+    end
   end
 
   # Rack callback for requests.  Rack provides an environment and expects a
   # response array of [status, headers, body].
   def self.call(env)
-    [200, {}, ["Hello!"]]
+    # Find the requested route
+    method = env['REQUEST_METHOD'].downcase.to_sym
+    path = env['PATH_INFO'].downcase.to_sym
+    route = which(method, path)
+
+    # Execute!
+    if route
+      body = []
+      body << route[:behavior].call
+      [200, {}, body]
+    else
+      [404, {}, ["No route to #{path}"]]
+    end
   end
 end
 
 # Extend the top-level Object with our module.
 extend W
-
-Rack::Handler::WEBrick.run W

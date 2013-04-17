@@ -7,3 +7,5 @@ end
 get '^/hello$' do
   "Goodbye, world!"
 end
+
+Rack::Handler::WEBrick.run W
