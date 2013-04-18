@@ -20,7 +20,11 @@ module W
   #
   # The value returned by the block will be rendered.
   def get(path, &blk)
-    @@routes[:get] << { :path => Regexp::compile(path), :behavior => blk }
+    route(:get, path, blk)
+  end
+
+  def route(method, path, blk)
+    @@routes[method] << { :path => Regexp::compile(path), :behavior => blk }
   end
 
   # Find which route matches the given path.  Return +nil+ if no routes match.
