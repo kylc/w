@@ -49,6 +49,10 @@ module W
     @@routes[method] << { :path => Regexp::compile(path), :behavior => blk }
   end
 
+  def self.extract_params(route, path)
+    route[:path].match(path).captures
+  end
+
   # Find which route matches the given path.
   #
   # Return +nil+ if no routes match.
@@ -61,18 +65,24 @@ module W
   # Rack callback for requests.  Rack provides an environment and expects a
   # response array of [status, headers, body].
   def self.call(env)
+    req = Rack::Request.new(env)
+
     # Find the requested route
-    method = env['REQUEST_METHOD'].downcase.to_sym
-    path = env['PATH_INFO'].downcase.to_sym
+    method = req.request_method.downcase.to_sym
+    path = req.path_info
     route = which(method, path)
 
     # Execute!
+    body = []
     if route
-      body = []
-      body << route[:behavior].call
+      params = extract_params(route, path)
+      params << req.params unless req.params.empty? # POST parameters
+
+      body << route[:behavior].call(*params)
       [200, {}, body]
     else
-      [404, {}, ["No route to #{path}"]]
+      body << "No route to #{path}"
+      [404, {}, body]
     end
   end
 end
