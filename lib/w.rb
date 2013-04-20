@@ -41,7 +41,8 @@ module W
   # path - The Regexp to match for this route.  Parameters are defined by
   #        matched groups.
   # blk  - The block to call when this route is matched.  It will pass in the
-  #        request parameters as they were defined in the path.
+  #        request parameters as they were defined in the path.  POST parameters
+  #        are passed into the black as the last argument.
   #
   # Returns nothing.
   def route(method, path, blk)
