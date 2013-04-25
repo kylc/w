@@ -12,4 +12,4 @@ post '^/bar/(\d+)$' do |id, params|
   "Params for #{id}: #{params}"
 end
 
-Rack::Handler::WEBrick.run W
+run!

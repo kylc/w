@@ -85,6 +85,11 @@ module W
       [404, {}, body]
     end
   end
+
+  # Run the application.
+  def run!
+    Rack::Handler::WEBrick.run W
+  end
 end
 
 # Extend the top-level Object with our module.
